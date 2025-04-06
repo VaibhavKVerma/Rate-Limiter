@@ -1,10 +1,11 @@
-import { Redis } from "ioredis";
+import { Redis } from 'ioredis';
+import { config } from '../util/config';
 
 let redisClient: Redis;
 
 const connectToRedis = async (): Promise<void> => {
     try {
-        redisClient = new Redis({ host: 'localhost', port: 6379 });
+        redisClient = new Redis({ host: config.REDIS_HOST, port: config.REDIS_PORT });
         console.log('Connected to Redis');
     } catch (error) {
         if (error instanceof Error) {
@@ -14,7 +15,7 @@ const connectToRedis = async (): Promise<void> => {
         }
         throw error;
     }
-}
+};
 
 const closeRedisConnection = async (): Promise<void> => {
     try {
@@ -27,6 +28,6 @@ const closeRedisConnection = async (): Promise<void> => {
             console.error('Unknown error closing Redis connection');
         }
     }
-}
+};
 
 export { connectToRedis, closeRedisConnection };

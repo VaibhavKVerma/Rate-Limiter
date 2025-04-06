@@ -1,8 +1,9 @@
 import mongoose, { Error } from 'mongoose';
+import { config } from '../util/config';
 const connectToMongoDb = async (): Promise<void> => {
     try {
-        await mongoose.connect(`mongodb://${process.env.MONGO_URI_USERNAME}:${process.env.MONGO_URI_PASSWORD}@localhost:27017`, {
-            dbName: process.env.MONGO_DB_NAME
+        await mongoose.connect(`mongodb://${config.MONGO_URI_USERNAME}:${config.MONGO_URI_PASSWORD}@localhost:27017`, {
+            dbName: config.MONGO_DB_NAME,
         });
         console.log('Connected to MongoDB');
     } catch (error) {

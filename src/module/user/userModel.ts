@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IUser } from './userEntity';
+import { UserEntity } from './userEntity';
 
 const userSchema = new mongoose.Schema(
     {
@@ -30,4 +30,4 @@ const userSchema = new mongoose.Schema(
 
 userSchema.index({ email: 1, password: 1, isActive: 1 }, { unique: true });
 
-export default mongoose.model<IUser>('User', userSchema);
+export default mongoose.model<UserEntity>('User', userSchema);

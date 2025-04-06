@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { login, me, signup } from "./userService";
 import CustomError from "../../util/customError";
 import { StatusCodes } from 'http-status-codes';
@@ -6,7 +6,7 @@ import AuthMiddleware from "../../middleware/authMiddleware";
 import CustomRequest from "../../util/customRequest";
 const router = Router();
 
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', async (req: Request, res: Response, next) => {
     try {
         const { name, email, password } = req.body;
         const user = { name, email, password };

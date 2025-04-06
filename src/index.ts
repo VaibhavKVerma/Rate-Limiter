@@ -2,12 +2,14 @@ import dotenv from "dotenv";
 import app from './app';
 import { connectToMongoDb, closeMongoDbConnection } from './db/mongo';
 import { connectToRedis, closeRedisConnection } from './db/redis';
+import {init as configInit, config} from './util/config';
 
 dotenv.config();
 
 const init = async (): Promise<void> => {
     try {
-        const portNumber: string = process.env.PORT || '';
+        configInit();
+        const portNumber: number = config.PORT;
         await connectToMongoDb();
         await connectToRedis();
         const handleClose = async (): Promise<void> => {
@@ -19,7 +21,7 @@ const init = async (): Promise<void> => {
         process.on('SIGINT', handleClose);
         process.on('SIGTERM', handleClose);
 
-        app.listen(Number(portNumber), () => {
+        app.listen(portNumber, () => {
             console.log(`Server started on PORT ${portNumber}`);
         });
     } catch (error) {

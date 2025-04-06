@@ -1,25 +1,23 @@
 import { StatusCodes } from 'http-status-codes';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import CustomError from '../../util/customError';
 import { createJWTToken, verifyJWTToken } from '../auth/authService';
 import { UserLoginRequest, UserSignupRequest, UserLoginResponse, UserSignupResponse } from './userDto';
 import { createUser, findUserByEmail, findUserById } from './userRepository';
 import { CreateJWTTokenRequest } from '../auth/authDto';
+import { DtoToEntity } from './userEntity';
 
 const signup = async (user: UserSignupRequest): Promise<UserSignupResponse> => {
     const existingUser = await findUserByEmail(user.email);
     if (existingUser) {
         throw new CustomError('Email already in use', StatusCodes.BAD_REQUEST);
     }
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    const newUser = await createUser({
-        name: user.name,
-        email: user.email,
-        password: hashedPassword,
-    });
+    user.password = await bcrypt.hash(user.password, 10);
+    const newUser = await createUser(DtoToEntity(user));
     const token = await createJWTToken(new CreateJWTTokenRequest(newUser._id));
     return { token };
 };
+
 
 const login = async (data: UserLoginRequest): Promise<UserLoginResponse> => {
     const user = await findUserByEmail(data.email);
@@ -35,14 +33,8 @@ const login = async (data: UserLoginRequest): Promise<UserLoginResponse> => {
     return { token };
 };
 
-const me = async (token: string) => {
-    token = token.split(' ')[1];
-    const decoded = await verifyJWTToken(token);
-    if (typeof decoded === 'object' && 'userId' in decoded) {
-        const userId = decoded.userId;
-        return await findUserById(userId);
-    }
-    throw new CustomError('Invalid token', StatusCodes.UNAUTHORIZED);
+const me = async (userId: string) => {
+    return await findUserById(userId);
 };
 
 export { signup, login, me };
