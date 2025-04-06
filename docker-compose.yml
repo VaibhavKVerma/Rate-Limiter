@@ -1,0 +1,15 @@
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_URI_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_URI_PASSWORD}
+    ports:
+      - 27017:27017
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
