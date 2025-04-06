@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import app from './app';
 import { connectToMongoDb, closeMongoDbConnection } from './db/mongo';
+import { connectToRedis, closeRedisConnection } from './db/redis';
 
 dotenv.config();
 
@@ -8,8 +9,10 @@ const init = async (): Promise<void> => {
     try {
         const portNumber: string = process.env.PORT || '';
         await connectToMongoDb();
+        await connectToRedis();
         const handleClose = async (): Promise<void> => {
             await closeMongoDbConnection();
+            await closeRedisConnection();
             process.exit(0);
         };
 

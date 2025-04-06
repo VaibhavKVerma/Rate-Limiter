@@ -1,27 +1,33 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import { IUser } from './userEntity';
 
-const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        maxLength: 50,
+const userSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            maxLength: 50,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        password: {
+            type: String,
+            required: true,
+        },
+        isActive: {
+            type: Boolean,
+            required: true,
+            default: true,
+        },
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    isActive: {
-        type: Boolean,
-        required: true,
-        default: true,
+    {
+        timestamps: true,
     }
-});
+);
 
 userSchema.index({ email: 1, password: 1, isActive: 1 }, { unique: true });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model<IUser>('User', userSchema);
